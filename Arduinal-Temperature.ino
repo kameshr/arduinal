@@ -57,6 +57,7 @@ void loop()
     if (returnCode == 0) {
         tweetTemp = tempC;
         event++;
+        logMessage(tweetText);
     }
   }
   delay(10000);
@@ -82,15 +83,21 @@ unsigned int tweetMessage(String message) {
   
   returnCode = StatusesUpdateChoreo.run();
   
-  if (returnCode == 0) {
-        logFile.println(message);
-    } else {
+  if (returnCode != 0) {
       while (StatusesUpdateChoreo.available()) {
         char c = StatusesUpdateChoreo.read();
-        logFile.print(c);
+        logMessage((String)c);
       }
     }
     StatusesUpdateChoreo.close();
-    logFile.close();
     return returnCode;
+}
+
+/* Logging function, uses a local log file on SD card */
+unsigned int logMessage(String message) {
+  File logFile = FileSystem.open(logFileName, FILE_APPEND);
+  while(!logFile);
+  logFile.println(message);
+  logFile.close();
+  return 0;
 }
