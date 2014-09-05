@@ -9,3 +9,5 @@
 This Arduino Yun sketch observes the ambient temperature and notifies
 significant changes through Twitter. Please update the header file &
 save it as "Accounts.h" before uploading the sketch. Enjoy!
+
+See sample Twitter notifications here: https://twitter.com/arduinal
