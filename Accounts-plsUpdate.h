@@ -15,3 +15,10 @@
 #define TWITTER_ACCESS_TOKEN_SECRET ""
 #define TWITTER_API_KEY ""
 #define TWITTER_API_SECRET ""
+
+/* InfluxDB account keys */
+#define INFLUXDB_SERVER ""
+#define INFLUXDB_PORT ""
+#define INFLUXDB_USER ""
+#define INFLUXDB_PASSWORD ""
+#define INFLUXDB_DATABASE ""
