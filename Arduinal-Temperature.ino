@@ -49,6 +49,7 @@ void loop()
     String tweetText("Event[" + timeValue + "]: Temperature " + relative + " to " + String(tempC) + " degC.");
     tweetMessage(tweetText);
     logMessage(tweetText);
+    tweetTemp = tempC;
   }
   delay(10000);
 }
