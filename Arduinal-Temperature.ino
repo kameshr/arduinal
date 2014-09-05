@@ -12,14 +12,13 @@
 #include <FileIO.h>
 #include "Accounts.h"
 
-/* Global variables */
+/* Global state variables */
 float tempC = 0;
 float tweetTemp = 0;
+
+/* Global settings */
 int tempPin = 0;
-String timeValue = "";
-Process date;
 float tempThresh = 2; //threshold of temperature change for notifying
-int event = 1; //number of notification events
 char* logFileName = "/mnt/sda1/logs/ArduinalTemp.txt"; //Needs an SD card on Arduino Yun
 int pollWindow = 10000; //in millisecs
 
@@ -30,9 +29,11 @@ void setup() {
 
 void loop()
 { 
+  /* Probe temperature */
   tempC = analogRead(tempPin);
   tempC = (5.0*tempC*100.0)/1024.0;
   
+  /* Poll for possible notification events */
   if(abs(tempC - tweetTemp) >= tempThresh) {
     String relative;
     if(tempC > tweetTemp) {
@@ -42,26 +43,30 @@ void loop()
     }
     
     /* Fetch the date-time string from OpenWRT kernel */
-    if(!date.running()) {
-      date.begin("date");
-      date.run();
-    }
-    while(date.available() > 0) {
-      timeValue = date.readString();
-      timeValue.trim();
-    }
+    String timeValue = getTime();
     
+    /* Construct message text and dispatch notifications */
     String tweetText("Event[" + timeValue + "]: Temperature " + relative + " to " + String(tempC) + " degC.");
-    
-    unsigned int returnCode = tweetMessage(tweetText);
-
-    if (returnCode == 0) {
-        tweetTemp = tempC;
-        event++;
-        logMessage(tweetText);
-    }
+    tweetMessage(tweetText);
+    logMessage(tweetText);
   }
   delay(10000);
+}
+
+/* Return the current time as a space de-limited string */
+String getTime() {
+  Process date;
+  String value = "";
+/* Fetch the date-time string from OpenWRT kernel */
+  if(!date.running()) {
+    date.begin("date");
+    date.run();
+  }
+  while(date.available() > 0) {
+    value = date.readString();
+    value.trim();
+  }
+  return value;
 }
 
 /* Tweet function, currently uses Temboo libraries */
