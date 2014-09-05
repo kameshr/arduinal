@@ -16,6 +16,8 @@
 float tempC = 0;
 float tweetTemp = 0;
 int tempPin = 0;
+String timeValue = "";
+Process date;
 float tempThresh = 2; //threshold of temperature change for notifying
 int event = 1; //number of notification events
 char* logFileName = "/mnt/sda1/logs/ArduinalTemp.txt"; //Needs an SD card on Arduino Yun
@@ -38,8 +40,17 @@ void loop()
     } else {
       relative = "decreased";
     }
-      
-    String tweetText("Event[" + (String)event + "]: Temperature " + relative + " to " + String(tempC) + " degC.");
+    
+    /* Fetch the date-time string from OpenWRT kernel */
+    if(!date.running()) {
+      date.begin("date");
+      date.run();
+    }
+    while(date.available() > 0) {
+      timeValue = date.readString();
+    }
+    
+    String tweetText("Event[" + timeValue + "]: Temperature " + relative + " to " + String(tempC) + " degC.");
     
     unsigned int returnCode = tweetMessage(tweetText);
 
@@ -72,7 +83,7 @@ unsigned int tweetMessage(String message) {
   returnCode = StatusesUpdateChoreo.run();
   
   if (returnCode == 0) {
-        logFile.println("Tweeted: " + message);
+        logFile.println(message);
     } else {
       while (StatusesUpdateChoreo.available()) {
         char c = StatusesUpdateChoreo.read();
