@@ -48,6 +48,7 @@ void loop()
     }
     while(date.available() > 0) {
       timeValue = date.readString();
+      timeValue.trim();
     }
     
     String tweetText("Event[" + timeValue + "]: Temperature " + relative + " to " + String(tempC) + " degC.");
