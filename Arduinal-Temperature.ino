@@ -19,12 +19,12 @@ float logTemp = 0;
 
 /* Global settings */
 int tempPin = 0;
-float tweetThresh = 5; //threshold of temperature change for notifying
+float tweetThresh = 3; //threshold of temperature change for notifying
 float logThresh = 0.5; //threshold of temperature change for logging
 char* logFileName = "/mnt/sda1/logs/ArduinalTemp.txt"; //Needs an SD card on Arduino Yun
 int pollWindow = 10000; //in millisecs
 
-void setup() {  
+void setup() {
   Bridge.begin();
   FileSystem.begin();
 }
@@ -97,14 +97,17 @@ unsigned int tweetMessage(String message) {
   StatusesUpdateChoreo.setAccountName(TEMBOO_ACCOUNT);
   StatusesUpdateChoreo.setAppKeyName(TEMBOO_APP_KEY_NAME);
   StatusesUpdateChoreo.setAppKey(TEMBOO_APP_KEY);
+  StatusesUpdateChoreo.setProfile(TEMBOO_TWITTER_PROFILE);
   StatusesUpdateChoreo.setChoreo("/Library/Twitter/Tweets/StatusesUpdate");
-
+  
+  /* //Moved to Temboo profile based Twitter authentication
   StatusesUpdateChoreo.addInput("AccessToken", TWITTER_ACCESS_TOKEN);
   StatusesUpdateChoreo.addInput("AccessTokenSecret", TWITTER_ACCESS_TOKEN_SECRET);
   StatusesUpdateChoreo.addInput("ConsumerKey", TWITTER_API_KEY);    
   StatusesUpdateChoreo.addInput("ConsumerSecret", TWITTER_API_SECRET);
-  StatusesUpdateChoreo.addInput("StatusUpdate", message);
+  */
   
+  StatusesUpdateChoreo.addInput("StatusUpdate", message);
   returnCode = StatusesUpdateChoreo.run();
   
   if (returnCode != 0) {

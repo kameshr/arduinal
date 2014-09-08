@@ -11,6 +11,7 @@
 #define TEMBOO_APP_KEY  ""
 
 /* Twitter account keys */
+#define TEMBOO_TWITTER_PROFILE ""
 #define TWITTER_ACCESS_TOKEN ""
 #define TWITTER_ACCESS_TOKEN_SECRET ""
 #define TWITTER_API_KEY ""
