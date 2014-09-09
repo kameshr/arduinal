@@ -133,7 +133,7 @@ unsigned int logMessage(String message) {
 unsigned int logTemperature(float temp) {
   Process restLog;
 
-  String dataPost = "[{\"name\":\"time-series\",\"columns\":[\"Temperature\"],\"points\":[ [\"" + (String)tempC + "\"]]}]";
+  String dataPost = "[{\"name\":\"time-series\",\"columns\":[\"Temperature\"],\"points\":[ [" + (String)tempC + "]]}]";
   String dbURL = String(INFLUXDB_SERVER) + ":" + String(INFLUXDB_PORT) + "/db/" + String(INFLUXDB_DATABASE) + "/series?u=" + String(INFLUXDB_USER) + "&p=" + String(INFLUXDB_PASSWORD);
   String cmdString = String("curl -X POST -d \'" + dataPost + "\' \'" + dbURL + "\' ");
 
