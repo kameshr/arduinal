@@ -1,0 +1,22 @@
+Copyright (c) 2014 Kamesh Raghavendra
+
+Dependencies:
+1. Arduino Yun board with OpenWRT 1.3+ Linux, SD card, temperature sensor
+2. Python 2.7+ in the OpenWRT environment
+3. Pip package manager - see instructions here: http://codybonney.com/installing-pip-on-the-arduino-yun/
+4. InfluxDB client Python library (pip install influxdb)
+5. TwitterAPI Python library (pip install TwitterAPI) 
+
+There are two stages in the installation:
+
+1. Rules Engine:
+a. Create '/mnt/sd/arduinal' & '/mnt/sd/arduinal/logs' directories on the SD card
+b. Transfer the 'lib' directory to '/mnt/sd/arduinal'
+c. Update settings in Accounts-plsUpdate.py & rename it to Accounts.py
+
+2. Arduino Sketches:
+a. Load sketch files into Arduino IDE
+b. Update settings in Accounts-plsUpdate.h header & rename it to Accounts.h
+c. Upload the sketch to Arduino Yun board
+
+Error messages are logged to the log file (by default in dir '/mnt/sd/arduinal/logs')
