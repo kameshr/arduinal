@@ -33,4 +33,5 @@ INFLUXDB_PASSWORD = ''
 INFLUXDB_DATABASE = ''
 
 # Local runtime resources
-LOCAL_LOGFILE = ''
+ARDUINAL_DIR = ""
+LOG_FILENAME = ""
