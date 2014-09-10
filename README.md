@@ -1,11 +1,13 @@
 Copyright (c) 2014 Kamesh Raghavendra
 
-This program notifies changes in ambient temperature beyond a
-set threshold through a Twitter feed
+This application observes ambient temperature & intelligently notifies anomalies
+
 Requires Arduino Yun, OpenWRT 1.3+, SD card, temperature sensor
 
-This Arduino Yun sketch observes the ambient temperature and notifies
-significant changes through Twitter. Please update the header file &
-save it as "Accounts.h" before uploading the sketch. Enjoy!
+There are two components to this application:
+sketches: This runs in the ATmega32u4 side of the bridge, reports temperature changes
+rules-engine: This runs in the AR9331 OpenWRT Linux side of the bridge, detects anomalies in temperature
+
+Refer to INTALL for installation intructions
 
 See sample Twitter notifications here: https://twitter.com/arduinal
