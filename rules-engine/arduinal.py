@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ########################################################################
 # Copyright (c) 2014 Kamesh Raghavendra
 #
@@ -33,7 +34,7 @@ def tweetMessage(message):
 			settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET
 			)
 	r = api.request('statuses/update', {'status':message})
-	logMessage('Tweeted message [' + message + '] with status ' + r.status_code)
+	logMessage('Tweeted message [' + message + '] with status ' + str(r.status_code))
 
 # Query time-series data in the cloud, DB settings defined in settings.py
 def queryDB(queryString):
@@ -59,25 +60,42 @@ def logTemperature(seriesName, tempC):
 			}
 	]
 	db.write_points(data)
+	detectAnomaly(seriesName, tempC, timeObject)
+
+# Core data-driven anomaly detection function
+def detectAnomaly(seriesName, tempC, timeObject):
+	validateState(seriesName)
+	hr_key = str(timeObject[3]) + '_hr'
+	if settings.state.has_key(hr_key):
+		if abs(tempC - settings.state[hr_key]['mean']) > 2*settings.state[hr_key]['stddev']:
+			relative = str();
+			if tempC > settings.state[hr_key]['mean']:
+				relative = 'hotter'
+			else:
+				relative = 'cooler'
+			tweetString = unicode('Temperature ' + str(round(tempC,2))) + settings.DEGREE_SIGN + unicode('C ' + relative + ' for this time of the day. ' +
+					'Avg temperature is ' + str(round(settings.state[hr_key]['mean'],2))) + settings.DEGREE_SIGN + unicode('C.')
+			tweetMessage(tweetString)
 
 # Build necessary state variables from current/historical data
 # into the global state data-structure
-def buildState():
+def buildState(seriesName):
 	settings.state = dict()
 	settings.state['update_time'] = time.gmtime()
-	queryString = str('select mean(Temperature), stddev(Temperature), count(Temperature) from time-series group by Hour')
+	queryString = str('select mean(Temperature), stddev(Temperature), count(Temperature) from ' + seriesName + ' group by Hour')
 	results = queryDB(queryString)
 	for i in results[0]['points'][:]:
-		settings.state[str(i[4]) + '_hr'] = {results[0]['columns'][1]: i[1], results[0]['columns'][2]: i[2], results[0]['columns'][3]: i[3]}
+		settings.state[str(i[4]) + '_hr'] = {results[0]['columns'][1]: i[1],
+			results[0]['columns'][2]: i[2], results[0]['columns'][3]: i[3]}
 
 # Validate the currency of the state data-structures
-def validateState():
+def validateState(seriesName):
 	if settings.state.has_key('update_time'):
 		current_time = time.gmtime()
-		if current_time[0] != setings.state['update_time'][0] or current_time[7] != setings.state['update_time'][7]:
-			buildState()
+		if current_time[0] != settings.state['update_time'][0] or current_time[7] != settings.state['update_time'][7]:
+			buildState(seriesName)
 	else:
-		buildState()
+		buildState(seriesName)
 
 # Main script that routes requests from across the bridge
 # and notifies anomalies detected
@@ -90,7 +108,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'logTemperature':
 	else:
 		logMessage("ERROR: Wrong series name | Usage: arduinal.py logTemperature <series-name> <temperature value>")
 elif len(sys.argv) > 1 and sys.argv[1] == 'test-debug':
-	validateState()
-	print settings.state
+	validateState('time-series')
+	detectAnomaly('time-series', 27.6, time.gmtime())
 else:
 	logMessage("ERROR: Wrong command | Usage: arduinal.py logTemperature <series-name> <temperature value>")

@@ -33,4 +33,4 @@
 /* OpenWRT/SD resources - create the directory structure & copy the rules engine */
 #define ARDUINAL_DIR "/mnt/sd/arduinal"
 #define LOG_FILENAME "/mnt/sd/arduinal/logs/arduinal-log.txt"
-#define RULES_FILENAME "/mnt/sd/arduinal/lib/arduinal.py"
+#define RULES_FILENAME "/mnt/sd/arduinal/rules-engine/arduinal.py"

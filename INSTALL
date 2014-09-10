@@ -11,7 +11,7 @@ There are two stages in the installation:
 
 1. Rules Engine:
 a. Create '/mnt/sd/arduinal' & '/mnt/sd/arduinal/logs' directories on the SD card
-b. Transfer the 'lib' directory to '/mnt/sd/arduinal'
+b. Transfer the 'rules-engine' directory to '/mnt/sd/arduinal'
 c. Update settings in settings-plsUpdate.py & rename it to settings.py
 
 2. Arduino Sketches:

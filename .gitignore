@@ -1,6 +1,6 @@
-sketches/settings.h
+.DS_Store
+settings.h
 rules-engine/settings.py
 rules-engine/settings.pyc
 *swp
-sketches/*swp
 rules-engine/*swp

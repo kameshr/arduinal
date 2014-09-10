@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #########################################################################
 # Copyright (c) 2014 Kamesh Raghavendra
 #
@@ -33,5 +34,9 @@ INFLUXDB_PASSWORD = ''
 INFLUXDB_DATABASE = ''
 
 # Local runtime resources
-ARDUINAL_DIR = ""
-LOG_FILENAME = ""
+ARDUINAL_DIR = "/mnt/sd/arduinal"
+LOG_FILENAME = "/mnt/sd/arduinal/logs/arduinal-log.txt"
+
+# Rules-engine state variables
+state = dict()
+DEGREE_SIGN = u'\N{DEGREE SIGN}'
