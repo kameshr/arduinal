@@ -10,7 +10,7 @@
 #include <Temboo.h>
 #include <Process.h>
 #include <FileIO.h>
-#include "Accounts.h"
+#include "settings.h"
 
 /* Global state variables */
 float tempC = 0;

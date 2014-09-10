@@ -12,11 +12,11 @@ There are two stages in the installation:
 1. Rules Engine:
 a. Create '/mnt/sd/arduinal' & '/mnt/sd/arduinal/logs' directories on the SD card
 b. Transfer the 'lib' directory to '/mnt/sd/arduinal'
-c. Update settings in Accounts-plsUpdate.py & rename it to Accounts.py
+c. Update settings in settings-plsUpdate.py & rename it to settings.py
 
 2. Arduino Sketches:
 a. Load sketch files into Arduino IDE
-b. Update settings in Accounts-plsUpdate.h header & rename it to Accounts.h
+b. Update settings in settings-plsUpdate.h header & rename it to settings.h
 c. Upload the sketch to Arduino Yun board
 
 Error messages are logged to the log file (by default in dir '/mnt/sd/arduinal/logs')

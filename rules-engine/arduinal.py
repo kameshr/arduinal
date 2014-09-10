@@ -10,12 +10,12 @@
 #	1. Python 2.7 or later
 #	2. influxdb client (pip install influxdb)
 #	3. TwitterAPI client (pip install TwitterAPI)
-#	4. Updated Accounts.py to be placed in the same dir on SD card
+#	4. Updated settings.py to be placed in the same dir on SD card
 #
 #######################################################################
 
 from influxdb import client as influxdb
-import Accounts
+import settings
 from TwitterAPI import TwitterAPI
 import time
 import sys
@@ -24,22 +24,22 @@ def logMessage(message):
 	print message
 
 def tweetMessage(message):
-	api = TwitterAPI(Accounts.TWITTER_API_KEY, Accounts.TWITTER_API_SECRET,
-			Accounts.TWITTER_ACCESS_TOKEN, Accounts.TWITTER_ACCESS_TOKEN_SECRET
+	api = TwitterAPI(settings.TWITTER_API_KEY, settings.TWITTER_API_SECRET,
+			settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET
 			)
 	r = api.request('statuses/update', {'status':message})
 	logMessage(r.status_code)
 
 def queryDB(queryString):
-	db = influxdb.InfluxDBClient(Accounts.INFLUXDB_SERVER, Accounts.INFLUXDB_PORT,
-			Accounts.INFLUXDB_USER, Accounts.INFLUXDB_PASSWORD, Accounts.INFLUXDB_DATABASE
+	db = influxdb.InfluxDBClient(settings.INFLUXDB_SERVER, settings.INFLUXDB_PORT,
+			settings.INFLUXDB_USER, settings.INFLUXDB_PASSWORD, settings.INFLUXDB_DATABASE
 			)
 	result = db.query(queryString)
 	return result
 
 def logTemperature(seriesName, tempC):
-	db = influxdb.InfluxDBClient(Accounts.INFLUXDB_SERVER, Accounts.INFLUXDB_PORT,
-			Accounts.INFLUXDB_USER, Accounts.INFLUXDB_PASSWORD, Accounts.INFLUXDB_DATABASE
+	db = influxdb.InfluxDBClient(settings.INFLUXDB_SERVER, settings.INFLUXDB_PORT,
+			settings.INFLUXDB_USER, settings.INFLUXDB_PASSWORD, settings.INFLUXDB_DATABASE
 			)
 	timeObject = time.gmtime(None)
 	data = [
