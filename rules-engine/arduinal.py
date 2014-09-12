@@ -67,14 +67,19 @@ def detectAnomaly(seriesName, tempC, timeObject):
 	validateState(seriesName)
 	hr_key = str(timeObject[3]) + '_hr'
 	if settings.state.has_key(hr_key):
-		if abs(tempC - settings.state[hr_key]['mean']) > 2*settings.state[hr_key]['stddev']:
+		queryString = 'select mean(Temperature), stddev(Temperature), count(Temperature) from ' + seriesName + ' where Year = ' + str(timeObject[0]) + ' and YearDay = ' + str(timeObject[7]) + ' and Hour = ' + str(timeObject[3])
+		results = queryDB(queryString)
+		if results[0]['points'][0][3] >= settings.STAT_SIGNIFICANT and abs(results[0]['points'][0][1] - settings.state[hr_key]['mean']) > 2*settings.state[hr_key]['stddev']:
 			relative = str();
-			if tempC > settings.state[hr_key]['mean']:
+			if results[0]['points'][0][1] > settings.state[hr_key]['mean']:
 				relative = 'hotter'
 			else:
 				relative = 'cooler'
-			tweetString = unicode('Temperature ' + str(round(tempC,2))) + settings.DEGREE_SIGN + unicode('C ' + relative + ' for this time of the day. ' +
+			tweetString = unicode('Temperature ' + str(round(results[0]['points'][0][1], 2))) + settings.DEGREE_SIGN + unicode('C ' + relative + ' than average for this time of the day.\n' +
 					'Avg temperature is ' + str(round(settings.state[hr_key]['mean'],2))) + settings.DEGREE_SIGN + unicode('C.')
+			tweetMessage(tweetString)
+		if results[0]['points'][0][3] >= settings.STAT_SIGNIFICANT and results[0]['points'][0][2] > 2*settings.state[hr_key]['stddev']:
+			tweetString = unicode('Detecting unusual temperature fluctuations, maybe ambient activity or rainfall.\n') + settings.SIGMA + unicode(' = ' + str(round(results[0]['points'][0][2], 2)) + ', while Avg-') + settings.SIGMA + unicode(' = ' + str(round(settings.state[hr_key]['stddev'])))
 			tweetMessage(tweetString)
 
 # Build necessary state variables from current/historical data

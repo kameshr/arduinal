@@ -40,3 +40,5 @@ LOG_FILENAME = "/mnt/sd/arduinal/logs/arduinal-log.txt"
 # Rules-engine state variables
 state = dict()
 DEGREE_SIGN = u'\N{DEGREE SIGN}'
+SIGMA = u'\u03C3'
+STAT_SIGNIFICANT = 5
