@@ -24,9 +24,8 @@ import sys
 # Log a message to a local file on Arduino SD card
 # uses setting LOG_FILENAME defined in settings.py
 def logMessage(message):
-	logFile = open(settings.LOG_FILENAME, 'a')
-	logFile.write('[' + time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime()) + '] ' + str(message) + '\n')
-	logFile.close()
+	with open(settings.LOG_FILENAME, "a") as logFile:
+		logFile.write("[" + time.strftime("%a, %d %b %Y %H:%M:%S +0000", time.gmtime()) + "] " + str(message) + "\n")
 
 # Broadcast a notification on Twitter, uses APIs defined in settings.py
 def tweetMessage(message):
@@ -34,7 +33,7 @@ def tweetMessage(message):
 			settings.TWITTER_ACCESS_TOKEN, settings.TWITTER_ACCESS_TOKEN_SECRET
 			)
 	r = api.request('statuses/update', {'status':message})
-	logMessage('Tweeted message [' + message + '] with status ' + str(r.status_code))
+	logMessage("Tweeted message [" + message + "] with status " + str(r.status_code))
 
 # Query time-series data in the cloud, DB settings defined in settings.py
 def queryDB(queryString):
@@ -69,17 +68,16 @@ def detectAnomaly(seriesName, tempC, timeObject):
 	if settings.state.has_key(hr_key):
 		queryString = 'select mean(Temperature), stddev(Temperature), count(Temperature) from ' + seriesName + ' where Year = ' + str(timeObject[0]) + ' and YearDay = ' + str(timeObject[7]) + ' and Hour = ' + str(timeObject[3])
 		results = queryDB(queryString)
-		if results[0]['points'][0][3] >= settings.STAT_SIGNIFICANT and abs(results[0]['points'][0][1] - settings.state[hr_key]['mean']) > 2*settings.state[hr_key]['stddev']:
+		if abs(tempC - settings.state[hr_key]['mean']) > 2*settings.state[hr_key]['stddev']:
 			relative = str();
-			if results[0]['points'][0][1] > settings.state[hr_key]['mean']:
-				relative = 'hotter'
+			if tempC > settings.state[hr_key]['mean']:
+				relative = "spiked up to "
 			else:
-				relative = 'cooler'
-			tweetString = unicode('Temperature ' + str(round(results[0]['points'][0][1], 2))) + settings.DEGREE_SIGN + unicode('C ' + relative + ' than average for this time of the day.\n' +
-					'Avg temperature is ' + str(round(settings.state[hr_key]['mean'],2))) + settings.DEGREE_SIGN + unicode('C.')
+				relative = "dropped to "
+			tweetString = unicode("Temperature " + relative + str(round(tempC, 2))) + settings.DEGREE_SIGN + unicode("C relative to average " + str(round(settings.state[hr_key]['mean'],2))) + settings.DEGREE_SIGN + unicode("C for this time of the day.")
 			tweetMessage(tweetString)
 		if results[0]['points'][0][3] >= settings.STAT_SIGNIFICANT and results[0]['points'][0][2] > 2*settings.state[hr_key]['stddev']:
-			tweetString = unicode('Detecting unusual temperature fluctuations, maybe ambient activity or rainfall.\n') + settings.SIGMA + unicode(' = ' + str(round(results[0]['points'][0][2], 2)) + ', while Avg-') + settings.SIGMA + unicode(' = ' + str(round(settings.state[hr_key]['stddev'])))
+			tweetString = unicode("Detecting unusual temperature fluctuations, maybe ambient activity or rainfall.\n") + settings.SIGMA + unicode(" = " + str(round(results[0]['points'][0][2], 2)) + ", while Avg-") + settings.SIGMA + unicode(" = " + str(round(settings.state[hr_key]['stddev'])))
 			tweetMessage(tweetString)
 
 # Build necessary state variables from current/historical data
@@ -114,6 +112,6 @@ if len(sys.argv) > 1 and sys.argv[1] == 'logTemperature':
 		logMessage("ERROR: Wrong series name | Usage: arduinal.py logTemperature <series-name> <temperature value>")
 elif len(sys.argv) > 1 and sys.argv[1] == 'test-debug':
 	validateState('time-series')
-	detectAnomaly('time-series', 27.6, time.gmtime())
+	detectAnomaly('time-series', 37.6, time.gmtime())
 else:
 	logMessage("ERROR: Wrong command | Usage: arduinal.py logTemperature <series-name> <temperature value>")

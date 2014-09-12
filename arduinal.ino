@@ -19,6 +19,7 @@ float logTemp = 0;
 void setup() {
   Bridge.begin();
   FileSystem.begin();
+  logMessage(String("Booting up on Arduino Yun."));
 }
 
 void loop()
@@ -38,7 +39,7 @@ void loop()
 unsigned int logMessage(String message) {
   File logFile = FileSystem.open(LOG_FILENAME, FILE_APPEND);
   while(!logFile);
-  logFile.println(message);
+  logFile.println("[" + getTime() + "] " + message);
   logFile.close();
   return 0;
 }
@@ -54,8 +55,25 @@ unsigned int logTemperature(float temp) {
   while(restLog.available() > 0) {
     value = restLog.readString();
     value.trim();
-    logMessage(value);
+    if (value.length() > 0) {
+      logMessage(value);
+    }
   }
   
   return 0;
+}
+
+/* Get time stamp value */
+String getTime() {
+  Process timeProcess;
+  String value;
+  
+  timeProcess.runShellCommand("date");
+  while(timeProcess.running());
+  
+  while(timeProcess.available() > 0) {
+    value = timeProcess.readString();
+    value.trim();
+    return value;
+  }
 }
