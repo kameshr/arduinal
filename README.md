@@ -12,7 +12,7 @@ The application is currently configured to use InfluxDB for storing time-series 
 
 ![architecture](img/architecture.jpg)
 
-Refer to ![INSTALL](INSTALL) for installation intructions
+Refer to [INSTALL](INSTALL) for installation intructions
 
-See sample Twitter notifications ![here](https://twitter.com/arduinal)
-See sample time-series visualization ![here](http://54.255.180.1/grafana-1.8.0-rc1/#/dashboard/db/grafana)
+See sample Twitter notifications [here](https://twitter.com/arduinal)
+See sample time-series visualization [here](http://54.255.180.1/grafana-1.8.0-rc1/#/dashboard/db/grafana)
